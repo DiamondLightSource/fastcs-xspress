@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: fastcs-xspress
+  title: fastcs-xspress
+  description: fastcs interface for xspress detector
+spec:
+  type: library
+  lifecycle: experimental
+  owner: beamline-conrtrols
