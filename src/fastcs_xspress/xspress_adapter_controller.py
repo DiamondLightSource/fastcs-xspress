@@ -31,7 +31,7 @@ class AdapterResponseError(Exception): ...
 @dataclass
 class ParamTreeHandler(Handler):
     path: str
-    update_period: float = 0.2
+    update_period: float | None = 0.2
     allowed_values: dict[int, str] | None = None
 
     async def put(
@@ -56,7 +56,6 @@ class ParamTreeHandler(Handler):
         try:
             response = await controller.connection.get(self.path)
 
-            # TODO: This would be nicer if the key was 'value' so we could match
             parameter = "value"
             if parameter not in response:
                 raise ValueError(f"{parameter} not found in response:\n{response}")
@@ -71,26 +70,15 @@ class XspressAdapterController(OdinAdapterController):
     """SubController for an Xspress adapter in an odin control server."""
 
     def _process_parameters(self):
-        self.parameters = unpack_status_arrays(parameter=self.parameters, uri=uri_list)
+        self.parameters = unpack_status_arrays(parameters=self.parameters, uri=uri_list)
 
     def _create_attributes(self):
         """Create controller ``Attributes`` from ``OdinParameters``."""
         for parameter in self.parameters:
-            if "writeable" in parameter.metadata and parameter.metadata["writeable"]:
+            if parameter.metadata.writeable:
                 attr_class = AttrRW
             else:
                 attr_class = AttrR
-
-            if parameter.metadata["type"] not in types:
-                logging.warning(f"Could not handle parameter {parameter}")
-                # this is really something I should handle here
-                continue
-
-            allowed = (
-                parameter.metadata["allowed_values"]
-                if "allowed_values" in parameter.metadata
-                else None
-            )
 
             if len(parameter.path) >= 2:
                 group = snake_to_pascal(f"{parameter.path[0]}")
@@ -100,13 +88,13 @@ class XspressAdapterController(OdinAdapterController):
             attr_handler = ParamTreeHandler(
                 "/".join([self._api_prefix] + parameter.uri),
                 update_period=0.2,
-                allowed_values=allowed,
+                allowed_values=parameter.metadata.allowed_values,
             )
 
             attr = attr_class(
-                types[parameter.metadata["type"]],
+                types[parameter.metadata.type],
                 handler=attr_handler,
                 group=group,
             )
 
-            setattr(self, parameter.name.replace(".", "").replace("-", ""), attr)
+            self.attributes[parameter.name] = attr

@@ -24,8 +24,11 @@ class XspressController(Controller):
 
         self.connection = HTTPConnection(settings.ip, settings.port)
 
-    async def initialise(self) -> None:
+    async def connect(self) -> None:
         self.connection.open()
+
+    async def initialise(self) -> None:
+        await self.connect()
 
         response = await self.connection.get(
             f"{self.API_PREFIX}/xspress", headers=REQUEST_METADATA_HEADER
@@ -41,6 +44,3 @@ class XspressController(Controller):
         await adapter_controller.initialise()
 
         await self.connection.close()
-
-    async def connect(self) -> None:
-        self.connection.open()
