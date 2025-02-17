@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 description = "fastcs interface for xspress detector"
-dependencies = ["aiohttp", "fastcs"]
+dependencies = ["aiohttp", "fastcs~=0.8.0"]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
