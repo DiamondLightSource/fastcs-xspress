@@ -70,7 +70,9 @@ class XspressAdapterController(OdinAdapterController):
     """SubController for an Xspress adapter in an odin control server."""
 
     def _process_parameters(self):
-        self.parameters = unpack_status_arrays(parameters=self.parameters, uri=uri_list)
+        self.parameters = unpack_status_arrays(
+            parameters=self.parameters, uris=uri_list
+        )
 
     def _create_attributes(self):
         """Create controller ``Attributes`` from ``OdinParameters``."""

@@ -10,7 +10,12 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 description = "fastcs interface for xspress detector"
-dependencies = ["aiohttp", "fastcs~=0.8.0"]
+dependencies = [
+    "aiohttp",
+    "typer",
+    "fastcs~=0.8.0",
+    "fastcs-odin@git+https://github.com/DiamondLightSource/fastcs-odin",
+]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
@@ -24,6 +29,7 @@ dev = [
     "pipdeptree",
     "pre-commit",
     "pydata-sphinx-theme>=0.12",
+    "pyright",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
@@ -35,11 +41,6 @@ dev = [
     "tox-direct",
     "types-mock",
     "types-requests",
-]
-odin = [
-    "fastcs-odin @ git+https://github.com/DiamondLightSource/fastcs-odin@25-add-optional-status-array-unpacking",
-    "odin-control @ git+https://github.com/odin-detector/odin-control",
-    "odin-data[meta_writer] @ git+https://github.com/odin-detector/odin-data@fastcs-dev#subdirectory=python",
 ]
 
 [project.scripts]
