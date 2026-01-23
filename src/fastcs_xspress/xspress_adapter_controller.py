@@ -1,11 +1,4 @@
-import logging
-from dataclasses import dataclass
-from typing import Any
-
-from fastcs.attributes import AttrR, AttrRW, AttrW, Handler
-from fastcs.datatypes import Bool, Float, Int, String
-from fastcs.util import snake_to_pascal
-from fastcs_odin.odin_adapter_controller import OdinAdapterController
+from fastcs_odin.controllers.odin_adapter_controller import OdinAdapterController
 from fastcs_odin.util import unpack_status_arrays
 
 uri_list = [
@@ -22,81 +15,13 @@ uri_list = [
     ["status", "inp_est"],
 ]
 
-types = {"float": Float(), "int": Int(), "bool": Bool(), "str": String()}
-
-
-class AdapterResponseError(Exception): ...
-
-
-@dataclass
-class ParamTreeHandler(Handler):
-    path: str
-    update_period: float | None = 0.2
-    allowed_values: dict[int, str] | None = None
-
-    async def put(
-        self,
-        controller: "OdinAdapterController",
-        attr: AttrW[Any],
-        value: Any,
-    ) -> None:
-        try:
-            response = await controller.connection.put(self.path, value)
-            match response:
-                case {"error": error}:
-                    raise AdapterResponseError(error)
-        except Exception as e:
-            logging.error("Put %s = %s failed:\n%s", self.path, value, e)
-
-    async def update(
-        self,
-        controller: "OdinAdapterController",
-        attr: AttrR[Any],
-    ) -> None:
-        try:
-            response = await controller.connection.get(self.path)
-
-            parameter = "value"
-            if parameter not in response:
-                raise ValueError(f"{parameter} not found in response:\n{response}")
-
-            value = response.get(parameter)
-            await attr.set(value)
-        except Exception as e:
-            logging.error("Update loop failed for %s:\n%s", self.path, e)
-
 
 class XspressAdapterController(OdinAdapterController):
     """SubController for an Xspress adapter in an odin control server."""
 
-    def _process_parameters(self):
+    async def initialise(self):
         self.parameters = unpack_status_arrays(
             parameters=self.parameters, uris=uri_list
         )
 
-    def _create_attributes(self):
-        """Create controller ``Attributes`` from ``OdinParameters``."""
-        for parameter in self.parameters:
-            if parameter.metadata.writeable:
-                attr_class = AttrRW
-            else:
-                attr_class = AttrR
-
-            if len(parameter.path) >= 2:
-                group = snake_to_pascal(f"{parameter.path[0]}")
-            else:
-                group = None
-
-            attr_handler = ParamTreeHandler(
-                "/".join([self._api_prefix] + parameter.uri),
-                update_period=0.2,
-                allowed_values=parameter.metadata.allowed_values,
-            )
-
-            attr = attr_class(
-                types[parameter.metadata.type],
-                handler=attr_handler,
-                group=group,
-            )
-
-            self.attributes[parameter.name] = attr
+        await self._create_attributes()

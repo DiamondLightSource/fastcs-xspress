@@ -4,11 +4,8 @@ from typing import Optional
 import typer
 from fastcs.connections.ip_connection import IPConnectionSettings
 from fastcs.launch import FastCS
-from fastcs.transport.epics.options import (
-    EpicsGUIOptions,
-    EpicsIOCOptions,
-    EpicsOptions,
-)
+from fastcs.transports.epics.ca import EpicsCATransport
+from fastcs.transports.epics.options import EpicsGUIOptions, EpicsIOCOptions
 
 from fastcs_xspress.xspress_controller import XspressController
 
@@ -46,21 +43,22 @@ OdinPort = typer.Option(8888, help="Port of odin server")
 
 
 @app.command()
-def xsp_ioc(pv_prefix: str = typer.Argument(), ip: str = OdinIp, port: int = OdinPort):
-    controller = XspressController(IPConnectionSettings(ip, port))
-
-    options = EpicsOptions(
-        ioc=EpicsIOCOptions(pv_prefix=pv_prefix),
-        gui=EpicsGUIOptions(
-            output_path=Path.cwd() / "odin.bob", title=f"Odin - {pv_prefix}"
-        ),
+def ioc(pv_prefix: str = typer.Argument(), ip: str = OdinIp, port: int = OdinPort):
+    fastcs = FastCS(
+        controller=XspressController(IPConnectionSettings(ip, port)),
+        transports=[
+            EpicsCATransport(
+                epicsca=EpicsIOCOptions(pv_prefix=pv_prefix),
+                gui=EpicsGUIOptions(
+                    output_path=Path.cwd() / "opi" / "xspress.bob",
+                    title=f"Odin - {pv_prefix}",
+                ),
+            )
+        ],
     )
-    launcher = FastCS(controller, options)
-    launcher.create_docs()
-    launcher.create_gui()
-    launcher.run()
+
+    fastcs.run()
 
 
-# test with: python -m fastcs_odin
 if __name__ == "__main__":
     app()
