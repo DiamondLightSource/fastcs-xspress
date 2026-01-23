@@ -1,0 +1,226 @@
+{
+    "module": {
+        "value": "TEST"
+    },
+    "status": {
+        "sensor": {
+            "height": 0,
+            "width": 0,
+            "bytes": 0
+        },
+        "manufacturer": "Quantum Detectors",
+        "model": "Xspress 3",
+        "acquisition_complete": true,
+        "frames_acquired": 0,
+        "error": "",
+        "state": "",
+        "connected": false,
+        "reconnect_required": false
+    },
+    "version": {
+        "xspress-detector": {
+            "full": "0.4.0-15-ga823735-dirty",
+            "major": 0,
+            "minor": 4,
+            "patch": 0,
+            "short": "0.4.0"
+        }
+    },
+    "daq": {
+        "enabled": false,
+        "endpoints": ""
+    },
+    "adapter": {
+        "start_time": "",
+        "up_time": "",
+        "connected": false,
+        "username": "",
+        "scan": 0,
+        "debug_level": 0,
+        "update": 0,
+        "reset": 0
+    },
+    "process": {
+        "num_mca": 0,
+        "num_list": 0,
+        "num_chan_mca": 0,
+        "num_chan_list": 0
+    },
+    "config": {
+        "mode_control": 0,
+        "mode": "mca",
+        "num_cards": 0,
+        "num_tf": 0,
+        "base_ip": "",
+        "max_channels": 8,
+        "mca_channels": 8,
+        "max_spectra": 0,
+        "debug": 0,
+        "config_path": "",
+        "config_save_path": "",
+        "use_resgrades": false,
+        "run_flags": 0,
+        "dtc_energy": 0.0,
+        "trigger_mode": 0,
+        "invert_f0": 0,
+        "invert_veto": 0,
+        "debounce": 0,
+        "exposure_time": 1.0,
+        "num_images": 1,
+        "sca5_low_lim": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "sca5_high_lim": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "sca6_low_lim": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "sca6_high_lim": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "sca4_threshold": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "dtc_flags": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "dtc_all_evt_off": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_all_evt_grad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_all_evt_rate_off": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_all_evt_rate_grad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_in_win_off": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_in_win_grad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_in_win_rate_off": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "dtc_in_win_rate_grad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "connect": false,
+        "disconnect": false,
+        "save": true,
+        "restore": true,
+        "start": true,
+        "stop": false,
+        "trigger": true,
+        "start_acquisition": false,
+        "stop_acquisition": false,
+        "reconfigure": false
+    },
+    "app": {
+        "debug_level": 2,
+        "ctrl_endpoint": "tcp://127.0.0.1:12000",
+        "shutdown": 0
+    }
+}

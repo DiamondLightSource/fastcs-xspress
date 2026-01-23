@@ -14,6 +14,7 @@ Source          | <https://github.com/DiamondLightSource/fastcs-xspress>
 :---:           | :---:
 PyPI            | `pip install fastcs-xspress`
 Docker          | `docker run ghcr.io/diamondlightsource/fastcs-xspress:latest`
+Documentation   | <https://diamondlightsource.github.io/fastcs-xspress>
 Releases        | <https://github.com/DiamondLightSource/fastcs-xspress/releases>
 
 This is where you should put some images or code snippets that illustrate
@@ -31,3 +32,7 @@ Or if it is a commandline tool then you might put some example commands here:
 ```
 python -m fastcs_xspress --version
 ```
+
+<!-- README only content. Anything below this line won't be included in index.md -->
+
+See https://diamondlightsource.github.io/fastcs-xspress for more detailed documentation.
