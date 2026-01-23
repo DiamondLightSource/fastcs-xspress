@@ -5,6 +5,6 @@ metadata:
   title: fastcs-xspress
   description: fastcs interface for xspress detector
 spec:
-  type: library
+  type: service
   lifecycle: experimental
-  owner: beamline-conrtrols
+  owner: beamline-controls

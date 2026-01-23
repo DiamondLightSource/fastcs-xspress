@@ -1,18 +1,20 @@
 # Changes here will be overwritten by Copier
-_commit: 2.6.0
+_commit: 5.0.1
 _src_path: gh:DiamondLightSource/python-copier-template
 author_email: Luis.Segalla@diamond.ac.uk
 author_name: Luis Segalla
 component_lifecycle: experimental
-component_owner: beamline-conrtrols
-component_type: library
+component_owner: beamline-controls
+component_type: service
 description: fastcs interface for xspress detector
 distribution_name: fastcs-xspress
 docker: true
-docs_type: README
+docker_debug: false
+docs_type: sphinx
 git_platform: github.com
 github_org: DiamondLightSource
 package_name: fastcs_xspress
 pypi: true
 repo_name: fastcs-xspress
+strict_typing: false
 type_checker: pyright
