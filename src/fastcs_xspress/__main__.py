@@ -4,6 +4,7 @@ from typing import Optional
 import typer
 from fastcs.connections.ip_connection import IPConnectionSettings
 from fastcs.launch import FastCS
+from fastcs.logging import LogLevel, configure_logging
 from fastcs.transports.epics.ca import EpicsCATransport
 from fastcs.transports.epics.options import EpicsGUIOptions, EpicsIOCOptions
 
@@ -44,6 +45,8 @@ OdinPort = typer.Option(8888, help="Port of odin server")
 
 @app.command()
 def ioc(pv_prefix: str = typer.Argument(), ip: str = OdinIp, port: int = OdinPort):
+    configure_logging(LogLevel.TRACE)
+
     fastcs = FastCS(
         controller=XspressController(IPConnectionSettings(ip, port)),
         transports=[
