@@ -19,7 +19,7 @@ class XspressController(OdinController):
         match module:
             case "XspressAdapter":
                 return XspressAdapterController(
-                    connection, parameters, adapter, self._ios
+                    connection, parameters, f"{self.API_PREFIX}/{adapter}", self._ios
                 )
 
         return super()._create_adapter_controller(

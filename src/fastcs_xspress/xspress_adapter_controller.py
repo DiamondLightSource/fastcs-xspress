@@ -25,3 +25,4 @@ class XspressAdapterController(OdinAdapterController):
         )
 
         await self._create_attributes()
+        await self._create_commands()
