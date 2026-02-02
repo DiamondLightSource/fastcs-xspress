@@ -7,6 +7,7 @@ from fastcs.connections.ip_connection import IPConnectionSettings
 from fastcs_odin.util import create_odin_parameters
 from pytest_mock import MockerFixture
 
+from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
 from fastcs_xspress.xspress_controller import XspressController
 
 _lock = asyncio.Lock()
@@ -19,11 +20,17 @@ async def test_xspress_controller_creates_subcontroller(mocker: MockerFixture):
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
-    connection.get.return_value = {"adapters": ["xspress"]}
+    connection.get.return_value = {
+        "adapters": ["xspress"],
+        "module": {"value": "XspressAdapter"},
+    }
 
     await xsp_controller.initialise()
 
     assert list(xsp_controller.sub_controllers.keys()) == ["xspress"]
+    assert isinstance(
+        xsp_controller.sub_controllers["xspress"], XspressAdapterController
+    )
 
 
 @pytest.mark.asyncio
@@ -32,4 +39,4 @@ async def test_xspress_parameter_creation():
         response = json.loads(f.read())
 
     parameters = create_odin_parameters(response)
-    assert len(parameters) == 171
+    assert len(parameters) == 185
