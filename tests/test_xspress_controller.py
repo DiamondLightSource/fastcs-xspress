@@ -27,10 +27,10 @@ async def test_xspress_controller_creates_xspress_adapter(mocker: MockerFixture)
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
-    connection.get.return_value = {
-        "adapters": ["xspress"],
-        "module": {"value": "XspressAdapter"},
-    }
+    connection.get.side_effect = [
+        {"adapters": ["xspress"]},
+        {"module": {"value": "XspressAdapter"}},
+    ]
 
     await xsp_controller.initialise()
 
