@@ -4,7 +4,14 @@ from pathlib import Path
 
 import pytest
 from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs_odin.util import create_odin_parameters
+from fastcs_odin.controllers.odin_data.frame_processor import (
+    FrameProcessorAdapterController,
+)
+from fastcs_odin.util import (
+    OdinParameter,
+    OdinParameterMetadata,
+    create_odin_parameters,
+)
 from pytest_mock import MockerFixture
 
 from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
@@ -15,7 +22,7 @@ HERE = Path(__file__).parent
 
 
 @pytest.mark.asyncio
-async def test_xspress_controller_creates_subcontroller(mocker: MockerFixture):
+async def test_xspress_controller_creates_xspress_adapter(mocker: MockerFixture):
     xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
 
     connection = mocker.patch.object(xsp_controller, "connection")
@@ -31,6 +38,24 @@ async def test_xspress_controller_creates_subcontroller(mocker: MockerFixture):
     assert isinstance(
         xsp_controller.sub_controllers["xspress"], XspressAdapterController
     )
+
+
+@pytest.mark.asyncio
+async def test_xspress_controller_creates_fp_adapter(mocker: MockerFixture):
+    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller.connection = mocker.AsyncMock()
+
+    parameters = [
+        OdinParameter(
+            ["0"], metadata=OdinParameterMetadata(value=0, type="int", writeable=False)
+        )
+    ]
+
+    ctrl = xsp_controller._create_adapter_controller(
+        xsp_controller.connection, parameters, "fp", "FrameProcessorAdapter"
+    )
+
+    assert isinstance(ctrl, FrameProcessorAdapterController)
 
 
 @pytest.mark.asyncio
