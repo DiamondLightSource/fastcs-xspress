@@ -15,8 +15,7 @@ description = "fastcs interface for xspress detector"
 dependencies = [
     "aiohttp",
     "typer",
-    "fastcs~=0.8.0",
-    "fastcs-odin@git+https://github.com/DiamondLightSource/fastcs-odin@0.4.0",
+    "fastcs-odin@git+https://github.com/DiamondLightSource/fastcs-odin@xspress-dev",
 ]
 dynamic = ["version"]
 license.file = "LICENSE"

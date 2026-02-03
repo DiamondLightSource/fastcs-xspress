@@ -1,8 +1,17 @@
 {
-    "module": {
-        "value": "TEST"
-    },
     "status": {
+        "num_mca": 0,
+        "num_list": 0,
+        "num_chan_mca": 0,
+        "num_chan_list": 0,
+        "start_time": "",
+        "uptime": "",
+        "username": "",
+        "scan": 0,
+        "endpoint": "",
+        "debug_level": 0,
+        "update": 0,
+        "reset": 0,
         "sensor": {
             "height": 0,
             "width": 0,
@@ -12,51 +21,190 @@
         "model": "Xspress 3",
         "acquisition_complete": true,
         "frames_acquired": 0,
+        "scalar_0": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_1": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_2": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_3": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_4": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_5": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_6": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_7": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "scalar_8": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "dtc": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "inp_est": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
         "error": "",
         "state": "",
-        "connected": false,
-        "reconnect_required": false
+        "connected": true,
+        "reconnect_required": false,
+        "temp_0": [
+            20.0,
+            30.0
+        ],
+        "temp_1": [
+            21.0,
+            31.0
+        ],
+        "temp_2": [
+            22.0,
+            32.0
+        ],
+        "temp_3": [
+            23.0,
+            33.0
+        ],
+        "temp_4": [
+            24.0,
+            34.0
+        ],
+        "temp_5": [
+            25.0,
+            35.0
+        ],
+        "ch_frames_acquired": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "fem_dropped_frames": [
+            0,
+            0
+        ],
+        "cards_connected": [
+            1,
+            1
+        ],
+        "num_ch_connected": [
+            4,
+            4
+        ]
     },
     "version": {
-        "xspress-detector": {
-            "full": "0.4.0-15-ga823735-dirty",
+        "xspress_detector": {
+            "full": "0.5.0-7-g34d7231-dirty",
             "major": 0,
-            "minor": 4,
+            "minor": 5,
             "patch": 0,
-            "short": "0.4.0"
+            "short": "0.5.0"
         }
     },
-    "daq": {
-        "enabled": false,
-        "endpoints": ""
-    },
-    "adapter": {
-        "start_time": "",
-        "up_time": "",
-        "connected": false,
-        "username": "",
-        "scan": 0,
-        "debug_level": 0,
-        "update": 0,
-        "reset": 0
-    },
-    "process": {
-        "num_mca": 0,
-        "num_list": 0,
-        "num_chan_mca": 0,
-        "num_chan_list": 0
-    },
     "config": {
+        "enabled": false,
+        "endpoints": "",
+        "debug_level": 0,
         "mode_control": 0,
         "mode": "mca",
-        "num_cards": 0,
-        "num_tf": 0,
-        "base_ip": "",
+        "num_cards": 2,
+        "num_tf": 16384,
+        "base_ip": "192.168.0.1",
         "max_channels": 8,
         "mca_channels": 8,
-        "max_spectra": 0,
-        "debug": 0,
-        "config_path": "",
+        "max_spectra": 4096,
+        "debug": 1,
+        "config_path": "/your/settings_path",
         "config_save_path": "",
         "use_resgrades": false,
         "run_flags": 0,
@@ -206,21 +354,18 @@
             0.0,
             0.0,
             0.0
-        ],
-        "connect": false,
-        "disconnect": false,
-        "save": true,
-        "restore": true,
-        "start": true,
-        "stop": false,
-        "trigger": true,
-        "start_acquisition": false,
-        "stop_acquisition": false,
-        "reconfigure": false
+        ]
     },
-    "app": {
-        "debug_level": 2,
-        "ctrl_endpoint": "tcp://127.0.0.1:12000",
-        "shutdown": 0
+    "module": {
+        "value": "XspressAdapter"
+    },
+    "command": {
+        "allowed": [
+            "reconfigure",
+            "start_acquisition",
+            "stop_acquisition",
+            "trigger"
+        ],
+        "execute": ""
     }
 }
