@@ -35,29 +35,30 @@ class XspressAdapterController(OdinAdapterController):
                 case ["status" | "config", *_]:
                     parameter.set_path(parameter.path[1:])
 
-        status_parameters, self.parameters = partition(
-            self.parameters, lambda p: "status" in p.uri
+        scalar_parameters, self.parameters = partition(
+            self.parameters,
+            lambda p: (p.path[0].startswith("sca") or p.path[0].startswith("inp")),
         )
 
-        config_parameters, self.parameters = partition(
-            self.parameters, lambda p: "config" in p.uri
+        dtc_parameters, self.parameters = partition(
+            self.parameters, lambda p: p.path[0].startswith("dtc")
         )
 
-        self.status_controller = self._subcontroller_cls(
+        self.scalar_controller = self._subcontroller_cls(
             self.connection,
-            status_parameters,
+            scalar_parameters,
             f"{self._api_prefix}",
             self._ios,
         )
 
-        self.config_controller = self._subcontroller_cls(
+        self.dtc_controller = self._subcontroller_cls(
             self.connection,
-            config_parameters,
+            dtc_parameters,
             f"{self._api_prefix}",
             self._ios,
         )
 
-        await self.status_controller.initialise()
-        await self.config_controller.initialise()
+        await self.scalar_controller.initialise()
+        await self.dtc_controller.initialise()
         await self._create_attributes()
         await self._create_commands()
