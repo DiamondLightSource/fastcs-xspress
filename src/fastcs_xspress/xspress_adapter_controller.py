@@ -62,9 +62,9 @@ class XspressAdapterController(OdinAdapterController):
 
     async def initialise(self):
         # Unpack all the status parameters
-        # self.parameters = unpack_status_arrays(
-        #     parameters=self.parameters, uris=uri_list
-        # )
+        self.parameters = unpack_status_arrays(
+            parameters=self.parameters, uris=uri_list
+        )
 
         # Change path for all status and config parameters
         for parameter in self.parameters:
