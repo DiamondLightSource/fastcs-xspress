@@ -1,6 +1,11 @@
 from fastcs_odin.controllers.odin_adapter_controller import OdinAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
-from fastcs_odin.util import partition, unpack_status_arrays
+from fastcs_odin.util import (
+    OdinParameter,
+    create_attribute,
+    partition,
+    unpack_status_arrays,
+)
 
 uri_list = [
     ["status", "scalar_0"],
@@ -17,6 +22,39 @@ uri_list = [
 ]
 
 
+group_names = {
+    "det": [
+        "manufacturer",
+        "model",
+        "max_channels",
+        "mca_channels",
+        "max_spectra",
+        "username",
+        "endpoint",
+        "error",
+        "state",
+    ],
+}
+
+group_det = [
+    "manufacturer",
+    "model",
+    "max_channels",
+    "mca_channels",
+    "max_spectra",
+    "username",
+    "endpoint",
+    "error",
+    "state",
+]
+
+
+def get_group_name(parameter: OdinParameter) -> str:
+    if parameter.name in group_det:
+        return "Detector"
+    return ""
+
+
 class XspressAdapterController(OdinAdapterController):
     """SubController for an Xspress adapter in an odin control server."""
 
@@ -24,9 +62,9 @@ class XspressAdapterController(OdinAdapterController):
 
     async def initialise(self):
         # Unpack all the status parameters
-        self.parameters = unpack_status_arrays(
-            parameters=self.parameters, uris=uri_list
-        )
+        # self.parameters = unpack_status_arrays(
+        #     parameters=self.parameters, uris=uri_list
+        # )
 
         # Change path for all status and config parameters
         for parameter in self.parameters:
@@ -58,7 +96,16 @@ class XspressAdapterController(OdinAdapterController):
             self._ios,
         )
 
+        for parameter in self.parameters:
+            self.add_attribute(
+                parameter.name,
+                create_attribute(
+                    parameter=parameter,
+                    api_prefix=self._api_prefix,
+                    group=get_group_name(parameter=parameter),
+                ),
+            )
+
         await self.scalar_controller.initialise()
         await self.dtc_controller.initialise()
-        await self._create_attributes()
         await self._create_commands()
