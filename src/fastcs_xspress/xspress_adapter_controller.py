@@ -58,8 +58,6 @@ def get_group_name(parameter: OdinParameter) -> str:
 class XspressAdapterController(OdinAdapterController):
     """SubController for an Xspress adapter in an odin control server."""
 
-    _subcontroller_cls: type[OdinSubController] = OdinSubController
-
     async def initialise(self):
         # Unpack all the status parameters
         self.parameters = unpack_status_arrays(
@@ -82,14 +80,14 @@ class XspressAdapterController(OdinAdapterController):
             self.parameters, lambda p: p.path[0].startswith("dtc")
         )
 
-        self.scalar_controller = self._subcontroller_cls(
+        self.scalar_controller = OdinSubController(
             self.connection,
             scalar_parameters,
             f"{self._api_prefix}",
             self._ios,
         )
 
-        self.dtc_controller = self._subcontroller_cls(
+        self.dtc_controller = OdinSubController(
             self.connection,
             dtc_parameters,
             f"{self._api_prefix}",
