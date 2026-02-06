@@ -1,371 +1,334 @@
 {
-    "status": {
-        "num_mca": 0,
-        "num_list": 0,
-        "num_chan_mca": 0,
-        "num_chan_list": 0,
-        "start_time": "",
-        "uptime": "",
-        "username": "",
-        "scan": 0,
-        "endpoint": "",
-        "debug_level": 0,
-        "update": 0,
-        "reset": 0,
-        "sensor": {
-            "height": 0,
-            "width": 0,
-            "bytes": 0
-        },
-        "manufacturer": "Quantum Detectors",
-        "model": "Xspress 3",
-        "acquisition_complete": true,
-        "frames_acquired": 0,
-        "scalar_0": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_1": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_2": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_3": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_4": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_5": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_6": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_7": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "scalar_8": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "dtc": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "inp_est": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "error": "",
-        "state": "",
-        "connected": true,
-        "reconnect_required": false,
-        "temp_0": [
-            20.0,
-            30.0
-        ],
-        "temp_1": [
-            21.0,
-            31.0
-        ],
-        "temp_2": [
-            22.0,
-            32.0
-        ],
-        "temp_3": [
-            23.0,
-            33.0
-        ],
-        "temp_4": [
-            24.0,
-            34.0
-        ],
-        "temp_5": [
-            25.0,
-            35.0
-        ],
-        "ch_frames_acquired": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "fem_dropped_frames": [
-            0,
-            0
-        ],
-        "cards_connected": [
-            1,
-            1
-        ],
-        "num_ch_connected": [
-            4,
-            4
-        ]
-    },
-    "version": {
-        "xspress_detector": {
-            "full": "0.5.0-7-g34d7231-dirty",
-            "major": 0,
-            "minor": 5,
-            "patch": 0,
-            "short": "0.5.0"
-        }
-    },
-    "config": {
-        "enabled": false,
-        "endpoints": "",
-        "debug_level": 0,
-        "mode_control": 0,
-        "mode": "mca",
-        "num_cards": 2,
-        "num_tf": 16384,
-        "base_ip": "192.168.0.1",
-        "max_channels": 8,
-        "mca_channels": 8,
-        "max_spectra": 4096,
-        "debug": 1,
-        "config_path": "/your/settings_path",
-        "config_save_path": "",
-        "use_resgrades": false,
-        "run_flags": 0,
-        "dtc_energy": 0.0,
-        "trigger_mode": 0,
-        "invert_f0": 0,
-        "invert_veto": 0,
-        "debounce": 0,
-        "exposure_time": 1.0,
-        "num_images": 1,
-        "sca5_low_lim": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "sca5_high_lim": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "sca6_low_lim": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "sca6_high_lim": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "sca4_threshold": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "dtc_flags": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        ],
-        "dtc_all_evt_off": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_all_evt_grad": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_all_evt_rate_off": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_all_evt_rate_grad": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_in_win_off": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_in_win_grad": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_in_win_rate_off": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ],
-        "dtc_in_win_rate_grad": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
-        ]
-    },
-    "module": {
-        "value": "XspressAdapter"
-    },
-    "command": {
-        "allowed": [
-            "reconfigure",
-            "start_acquisition",
-            "stop_acquisition",
-            "trigger"
-        ],
-        "execute": ""
+  "status": {
+    "num_mca": 0,
+    "num_list": 0,
+    "start_time": "",
+    "uptime": "",
+    "username": "root",
+    "endpoint": "tcp://0.0.0.0:12000",
+    "update": 0,
+    "reset": 0,
+    "manufacturer": "Quantum Detectors",
+    "model": "Xspress 3",
+    "acquisition_complete": true,
+    "frames_acquired": 0,
+    "scalar_0": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_1": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_2": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_3": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_4": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_5": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_6": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_7": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scalar_8": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "dtc": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "inp_est": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "error": "",
+    "state": "",
+    "connected": false,
+    "reconnect_required": false,
+    "temp_0": [],
+    "temp_1": [],
+    "temp_2": [],
+    "temp_3": [],
+    "temp_4": [],
+    "temp_5": [],
+    "ch_frames_acquired": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "fem_dropped_frames": [],
+    "cards_connected": [],
+    "num_ch_connected": []
+  },
+  "version": {
+    "xspress_detector": {
+      "full": "0.5.0-8-g8aeb38f-dirty",
+      "major": 0,
+      "minor": 5,
+      "patch": 0,
+      "short": "0.5.0"
     }
+  },
+  "config": {
+    "enabled": false,
+    "endpoints": "",
+    "debug_level": 0,
+    "mode_control": 0,
+    "mode": "mca",
+    "num_cards": 0,
+    "num_tf": 0,
+    "base_ip": "",
+    "max_channels": 8,
+    "mca_channels": 8,
+    "max_spectra": 0,
+    "config_path": "",
+    "config_save_path": "",
+    "use_resgrades": false,
+    "run_flags": 0,
+    "dtc_energy": 0.0,
+    "trigger_mode": 0,
+    "invert_f0": 0,
+    "invert_veto": 0,
+    "debounce": 0,
+    "exposure_time": 1.0,
+    "num_images": 1,
+    "sca5_low_lim": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sca5_high_lim": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sca6_low_lim": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sca6_high_lim": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "sca4_threshold": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "dtc_flags": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "dtc_all_evt_off": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_all_evt_grad": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_all_evt_rate_off": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_all_evt_rate_grad": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_in_win_off": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_in_win_grad": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_in_win_rate_off": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "dtc_in_win_rate_grad": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "module": {
+    "value": "XspressAdapter"
+  },
+  "command": {
+    "allowed": [
+      "reconfigure",
+      "start_acquisition",
+      "stop_acquisition",
+      "trigger"
+    ],
+    "execute": ""
+  }
 }
