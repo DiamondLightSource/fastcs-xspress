@@ -30,20 +30,21 @@ async def test_xspress_controller_creates_xspress_adapter(mocker: MockerFixture)
     connection.get.side_effect = [
         {"adapters": ["xspress"]},
         {"module": {"value": "XspressAdapter"}},
+        {"allowed": "command1"},
     ]
 
     await xsp_controller.initialise()
 
-    assert list(xsp_controller.sub_controllers.keys()) == ["xspress"]
+    assert list(xsp_controller.sub_controllers.keys()) == ["XSPRESS"]
     assert isinstance(
-        xsp_controller.sub_controllers["xspress"], XspressAdapterController
+        xsp_controller.sub_controllers["XSPRESS"], XspressAdapterController
     )
     assert isinstance(
-        xsp_controller.sub_controllers["xspress"].sub_controllers["dtc_controller"],
+        xsp_controller.sub_controllers["XSPRESS"].sub_controllers["dtc_controller"],
         OdinSubController,
     )
     assert isinstance(
-        xsp_controller.sub_controllers["xspress"].sub_controllers["scalar_controller"],
+        xsp_controller.sub_controllers["XSPRESS"].sub_controllers["scalar_controller"],
         OdinSubController,
     )
 
@@ -75,13 +76,17 @@ async def test_xspress_attribute_creation(mocker: MockerFixture):
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
-    connection.get.side_effect = [{"adapters": ["xspress"]}, response]
+    connection.get.side_effect = [
+        {"adapters": ["xspress"]},
+        response,
+        {"allowed": "command1"},
+    ]
 
     await xsp_controller.initialise()
 
     assert (
         len(
-            xsp_controller.sub_controllers["xspress"]
+            xsp_controller.sub_controllers["XSPRESS"]
             .sub_controllers["dtc_controller"]
             .attributes
         )
@@ -89,10 +94,10 @@ async def test_xspress_attribute_creation(mocker: MockerFixture):
     )
     assert (
         len(
-            xsp_controller.sub_controllers["xspress"]
+            xsp_controller.sub_controllers["XSPRESS"]
             .sub_controllers["scalar_controller"]
             .attributes
         )
         == 120
     )
-    assert len(xsp_controller.sub_controllers["xspress"].attributes) == 53
+    assert len(xsp_controller.sub_controllers["XSPRESS"].attributes) == 53
