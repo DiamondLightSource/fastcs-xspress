@@ -4,6 +4,7 @@ from fastcs_odin.http_connection import HTTPConnection
 from fastcs_odin.util import OdinParameter
 
 from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
+from fastcs_xspress.xspress_fp_adapter_controller import XspressFPAdapterController
 
 
 class XspressController(OdinController):
@@ -19,6 +20,10 @@ class XspressController(OdinController):
         match module:
             case "XspressAdapter":
                 return XspressAdapterController(
+                    connection, parameters, f"{self.API_PREFIX}/{adapter}", self._ios
+                )
+            case "FrameProcessorAdapter":
+                return XspressFPAdapterController(
                     connection, parameters, f"{self.API_PREFIX}/{adapter}", self._ios
                 )
 
