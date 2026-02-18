@@ -49,10 +49,10 @@ group_det = [
 ]
 
 
-def get_group_name(parameter: OdinParameter) -> str:
+def get_group_name(parameter: OdinParameter) -> str | None:
     if parameter.name in group_det:
         return "Detector"
-    return ""
+    return None
 
 
 class XspressAdapterController(OdinAdapterController):
