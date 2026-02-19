@@ -21,21 +21,6 @@ uri_list = [
     ["status", "inp_est"],
 ]
 
-
-group_names = {
-    "det": [
-        "manufacturer",
-        "model",
-        "max_channels",
-        "mca_channels",
-        "max_spectra",
-        "username",
-        "endpoint",
-        "error",
-        "state",
-    ],
-}
-
 group_det = [
     "manufacturer",
     "model",
