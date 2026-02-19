@@ -33,10 +33,21 @@ group_det = [
     "state",
 ]
 
+group_temp = [
+    "temp_0",
+    "temp_1",
+    "temp_2",
+    "temp_3",
+    "temp_4",
+    "temp_5",
+]
+
 
 def get_group_name(parameter: OdinParameter) -> str | None:
     if parameter.name in group_det:
         return "Detector"
+    elif parameter.name in group_temp:
+        return "Temperature"
     return None
 
 
