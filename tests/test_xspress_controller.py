@@ -7,10 +7,10 @@ from fastcs.connections.ip_connection import IPConnectionSettings
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
+from fastcs_odin.controllers.odin_subcontroller import OdinSubController
 from fastcs_odin.util import (
     OdinParameter,
     OdinParameterMetadata,
-    create_odin_parameters,
 )
 from pytest_mock import MockerFixture
 
@@ -28,15 +28,24 @@ async def test_xspress_controller_creates_xspress_adapter(mocker: MockerFixture)
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
     connection.get.side_effect = [
-        {"adapters": ["xspress"]},
+        {"adapters": ["XSPRESS"]},
         {"module": {"value": "XspressAdapter"}},
+        {"allowed": ["command_1", "command_2"]},
     ]
 
     await xsp_controller.initialise()
 
-    assert list(xsp_controller.sub_controllers.keys()) == ["xspress"]
+    assert list(xsp_controller.sub_controllers.keys()) == ["XSPRESS"]
     assert isinstance(
-        xsp_controller.sub_controllers["xspress"], XspressAdapterController
+        xsp_controller.sub_controllers["XSPRESS"], XspressAdapterController
+    )
+    assert isinstance(
+        xsp_controller.sub_controllers["XSPRESS"].sub_controllers["dtc_controller"],
+        OdinSubController,
+    )
+    assert isinstance(
+        xsp_controller.sub_controllers["XSPRESS"].sub_controllers["scalar_controller"],
+        OdinSubController,
     )
 
 
@@ -59,9 +68,37 @@ async def test_xspress_controller_creates_fp_adapter(mocker: MockerFixture):
 
 
 @pytest.mark.asyncio
-async def test_xspress_parameter_creation():
+async def test_xspress_attribute_creation(mocker: MockerFixture):
     with (HERE / "input/xspress.json").open() as f:
         response = json.loads(f.read())
 
-    parameters = create_odin_parameters(response)
-    assert len(parameters) == 185
+    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+
+    connection = mocker.patch.object(xsp_controller, "connection")
+    connection.get = mocker.AsyncMock()
+    connection.get.side_effect = [
+        {"adapters": ["XSPRESS"]},
+        response,
+        {"allowed": response["command"]["allowed"]},
+    ]
+
+    await xsp_controller.initialise()
+
+    assert (
+        len(
+            xsp_controller.sub_controllers["XSPRESS"]
+            .sub_controllers["dtc_controller"]
+            .attributes
+        )
+        == 81
+    )
+    assert (
+        len(
+            xsp_controller.sub_controllers["XSPRESS"]
+            .sub_controllers["scalar_controller"]
+            .attributes
+        )
+        == 120
+    )
+    assert len(xsp_controller.sub_controllers["XSPRESS"].attributes) == 53
+    assert len(xsp_controller.sub_controllers["XSPRESS"].command_methods) == 4

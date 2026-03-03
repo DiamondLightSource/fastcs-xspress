@@ -772,11 +772,15 @@ epicsca = [
 
 [[package]]
 name = "fastcs-odin"
-version = "0.8.0a2.dev11+g87c0b1ff3"
-source = { git = "https://github.com/DiamondLightSource/fastcs-odin?rev=xspress-dev#87c0b1ff3d7b769ee397a6eb5d6fecbd600854fb" }
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "fastcs", extra = ["epicsca"] },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/57/89/ea7b117d7e6bbaf53e3e25ec966c61f4a72c67d1100236b3964fad933aac/fastcs_odin-0.8.0.tar.gz", hash = "sha256:2d68aa1569451743f38b556c887e5b73a5268492c53ed527fb5e6417a065e649", size = 259992, upload-time = "2026-02-20T16:18:21.728Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6d/53/68684bc62abf42adbbf575f18aa995432e5b68c9164d2382c5c3d5023252/fastcs_odin-0.8.0-py3-none-any.whl", hash = "sha256:8c64000d431d6ef2c558c82494b6a4365ac5274f294008427d494580fc691a7b", size = 29603, upload-time = "2026-02-20T16:18:20.472Z" },
 ]
 
 [[package]]
@@ -811,7 +815,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp" },
-    { name = "fastcs-odin", git = "https://github.com/DiamondLightSource/fastcs-odin?rev=xspress-dev" },
+    { name = "fastcs-odin", specifier = ">=0.8.0" },
     { name = "typer" },
 ]
 
