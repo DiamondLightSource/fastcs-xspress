@@ -43,7 +43,7 @@ dev = [
 ]
 
 [project.scripts]
-fastcs-xspress = "fastcs_xspress.__main__:main"
+fastcs-xspress = "fastcs_xspress.__main__:app"
 
 [project.urls]
 GitHub = "https://github.com/DiamondLightSource/fastcs-xspress"
