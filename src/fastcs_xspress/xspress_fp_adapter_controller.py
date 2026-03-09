@@ -35,7 +35,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                 num_num = mca.full_name.split(".")[-1].split("_")[1]
                 await self.connection.put(
                     f"api/0.1/fp/{fp_num}/config/hdf/dataset/mca_{num_num}/chunks",
-                    [value, 1, 4096],
+                    [value, 1, 4096],  # pyright: ignore[reportArgumentType]
                 )
 
         self.chunks.add_on_update_callback(callback=set_chunk_fp)
