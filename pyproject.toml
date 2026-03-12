@@ -12,7 +12,11 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 description = "fastcs interface for xspress detector"
-dependencies = ["aiohttp", "typer", "fastcs-odin>=0.8.0"]
+dependencies = [
+    "aiohttp",
+    "typer",
+    "fastcs-odin>=0.9.0",
+]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
@@ -39,7 +43,7 @@ dev = [
 ]
 
 [project.scripts]
-fastcs-xspress = "fastcs_xspress.__main__:main"
+fastcs-xspress = "fastcs_xspress.__main__:app"
 
 [project.urls]
 GitHub = "https://github.com/DiamondLightSource/fastcs-xspress"
