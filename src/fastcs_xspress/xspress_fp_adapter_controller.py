@@ -22,7 +22,8 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                 case OdinSubController():
                     for parameter in sub_controller.parameters:
                         if "chunks" in parameter.uri and "0" in parameter.uri:
-                            # mca_list.append(sub_controller.attributes[parameter.name])
+                            # Parameter name will be in the form of mca_X_chunks_0
+                            # sub_controller path will be in the form of ["FP", "X",...]
                             mca_list.append(
                                 (sub_controller.path[1], parameter.name.split("_")[1])
                             )
