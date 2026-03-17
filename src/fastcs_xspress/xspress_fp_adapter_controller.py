@@ -10,6 +10,7 @@ from fastcs_odin.util import get_all_sub_controllers
 
 class XspressFPAdapterController(FrameProcessorAdapterController):
     chunks: AttrRW[int]
+    acq_id: AttrRW[str]
 
     async def initialise(self):
         await super().initialise()
