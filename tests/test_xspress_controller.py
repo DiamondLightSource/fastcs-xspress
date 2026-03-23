@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from fastcs.attributes import AttrRW
 from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs.datatypes import Int
+from fastcs.datatypes import Int, String
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
@@ -23,6 +23,25 @@ from fastcs_xspress.xspress_fp_adapter_controller import XspressFPAdapterControl
 
 _lock = asyncio.Lock()
 HERE = Path(__file__).parent
+
+
+@pytest.mark.asyncio
+async def test_create_xspress_controller(mocker: MockerFixture):
+    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+
+    xsp_controller.file_path = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
+
+    connection = mocker.patch.object(xsp_controller, "connection")
+    connection.get = mocker.AsyncMock()
+
+    xspress_initialise_mock = mocker.patch(
+        "fastcs_xspress.xspress_controller.XspressController.initialise"
+    )
+
+    await xsp_controller.initialise()
+
+    xspress_initialise_mock.assert_called_once_with()
 
 
 @pytest.mark.asyncio
