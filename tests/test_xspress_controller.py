@@ -29,14 +29,19 @@ HERE = Path(__file__).parent
 async def test_create_xspress_controller(mocker: MockerFixture):
     xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
 
-    xsp_controller.file_path = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
+    mocker.patch.object(xsp_controller, "FP", create=True)
+    mocker.patch.object(xsp_controller, "MW", create=True)
 
-    connection = mocker.patch.object(xsp_controller, "connection")
-    connection.get = mocker.AsyncMock()
+    xsp_controller.FP.file_path = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.MW.directory = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.FP.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.MW.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.FP.acquisition_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.MW.acquisition_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
+    xsp_controller.FP.acq_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
 
     xspress_initialise_mock = mocker.patch(
-        "fastcs_xspress.xspress_controller.XspressController.initialise"
+        "fastcs_xspress.xspress_controller.OdinController.initialise"
     )
 
     await xsp_controller.initialise()
@@ -175,3 +180,30 @@ async def test_xspress_chunk_set(mocker: MockerFixture):
         "api/0.1/fp/0/config/hdf/dataset/mca_3/chunks", [1, 1, 4096]
     )
     assert connection.put.await_count == len(parameters)
+
+
+@pytest.mark.asyncio
+async def test_xspress_fp_adapter_controller_logging(mocker: MockerFixture):
+    xsp_fp = XspressFPAdapterController(mocker.AsyncMock(), [], "api/0.1", [])
+    mocker.patch.object(
+        FrameProcessorAdapterController,
+        "initialise",
+        new_callable=mocker.AsyncMock,
+    )
+    get_sub_controllers = mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.get_all_sub_controllers"
+    )
+
+    logging = mocker.patch("logging.warning")
+
+    get_sub_controllers.return_value = ["NotAnOdinSubController"]
+
+    connection = mocker.patch.object(xsp_fp, "connection")
+    connection.get = mocker.AsyncMock()
+    xsp_fp.chunks = AttrRW(Int(), initial_value=0)
+
+    await xsp_fp.initialise()
+
+    logging.assert_called_with(
+        "Subcontroller NotAnOdinSubController not an OdinAdapterController"
+    )
