@@ -75,7 +75,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
             ),
             group="Data",
         )
-        self.data_datatyoe = AttrRW(
+        self.data_datatype = AttrRW(
             String(),
             io_ref=ConfigFanAttributeIORef(
                 [attr for name, attr in self.attributes.items() if "datatype" in name]  # pyright: ignore[reportArgumentType]
