@@ -1,11 +1,12 @@
 import logging
 
-from fastcs.attributes import AttrRW
+from fastcs.attributes import AttrR, AttrRW
 from fastcs.datatypes import Int, String
 from fastcs_odin.controllers import (
     FrameProcessorAdapterController,
 )
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
+from fastcs_odin.io import StatusSummaryAttributeIORef
 from fastcs_odin.io.config_fan_sender_attribute_io import ConfigFanAttributeIORef
 from fastcs_odin.util import get_all_sub_controllers
 
@@ -13,6 +14,7 @@ from fastcs_odin.util import get_all_sub_controllers
 class XspressFPAdapterController(FrameProcessorAdapterController):
     chunks: AttrRW[int]
     acq_id: AttrRW[str]
+    count: AttrR[int]
 
     async def initialise(self):
         await super().initialise()
@@ -92,6 +94,17 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                 ]  # pyright: ignore[reportArgumentType]
             ),
             group="Data",
+        )
+        self.total_frames_written = AttrR(
+            Int(),
+            io_ref=StatusSummaryAttributeIORef(
+                ["FramesWritten"],
+                "FramesWritten",
+                lambda val: int(self.frames_written.get() / self.count.get())
+                if self.count.get() > 0
+                else 0,
+                [self.frames_written],
+            ),
         )
 
         async def set_chunk_fp(value: int):
