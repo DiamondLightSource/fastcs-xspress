@@ -1,7 +1,3 @@
-import enum
-
-from fastcs.attributes import AttrR
-from fastcs.datatypes import Int
 from fastcs_odin.controllers.odin_adapter_controller import OdinAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
 from fastcs_odin.util import (
