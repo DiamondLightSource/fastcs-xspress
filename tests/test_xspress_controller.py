@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from fastcs.attributes import AttrRW
 from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs.datatypes import Int, String
+from fastcs.datatypes import Int
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
@@ -13,13 +13,13 @@ from fastcs_odin.controllers.odin_subcontroller import OdinSubController
 from fastcs_odin.util import (
     OdinParameter,
     OdinParameterMetadata,
-    create_odin_parameters,
 )
 from pytest_mock import MockerFixture
 
 from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
 from fastcs_xspress.xspress_controller import XspressController
 from fastcs_xspress.xspress_fp_adapter_controller import XspressFPAdapterController
+from fastcs_xspress.xspress_odin_controller import XspressOdinController
 
 _lock = asyncio.Lock()
 HERE = Path(__file__).parent
@@ -28,61 +28,60 @@ HERE = Path(__file__).parent
 @pytest.mark.asyncio
 async def test_create_xspress_controller(mocker: MockerFixture):
     xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+    # xsp_controller.connection = mocker.AsyncMock()
+    # xsp_controller.connection.get.side_effect = [{"val": ""}]
 
-    mocker.patch.object(xsp_controller, "FP", create=True)
-    mocker.patch.object(xsp_controller, "MW", create=True)
+    connection = mocker.patch.object(xsp_controller, "connection")
+    connection.get = mocker.AsyncMock()
+    connection.get.side_effect = [
+        {"value": 1},
+    ]
 
-    xsp_controller.FP.file_path = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.MW.directory = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.FP.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.MW.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.FP.acquisition_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.MW.acquisition_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
-    xsp_controller.FP.acq_id = AttrRW(String(), initial_value="test_acq_id")  # pyright: ignore[reportAttributeAccessIssue]
-
-    xspress_initialise_mock = mocker.patch(
-        "fastcs_xspress.xspress_controller.OdinController.initialise"
+    drv_connection = mocker.patch(
+        "fastcs_xspress.xspress_adapter_controller.XspressAdapterController.initialise"
     )
+    od_connection = mocker.patch(
+        "fastcs_xspress.xspress_odin_controller.XspressOdinController.initialise"
+    )
+    mocker.patch("fastcs_odin.util.create_odin_parameters")
 
     await xsp_controller.initialise()
 
-    xspress_initialise_mock.assert_called_once_with()
+    drv_connection.assert_called_once()
+    od_connection.assert_called_once()
+    assert isinstance(xsp_controller.xspress, XspressAdapterController)  # pyright: ignore[reportAttributeAccessIssue]
+    assert isinstance(xsp_controller.OD, XspressOdinController)
 
 
 @pytest.mark.asyncio
-async def test_xspress_controller_creates_xspress_adapter(mocker: MockerFixture):
+async def test_xspress_adapter_controller_creates_sub_controllers(
+    mocker: MockerFixture,
+):
     xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
 
-    parameters = [
-        OdinParameter(
-            ["dtc"],
-            metadata=OdinParameterMetadata(value=0, type="int", writeable=False),
-        ),
-        OdinParameter(
-            ["scalar"],
-            metadata=OdinParameterMetadata(value=0, type="int", writeable=False),
-        ),
-    ]
-    ctrl = xsp_controller._create_adapter_controller(
-        xsp_controller.connection, parameters, "xspress", "XspressAdapter"
+    parameters = [{"dtc": "", "scalars": ""}]
+
+    connection = mocker.patch.object(xsp_controller, "connection")
+    connection.get = mocker.AsyncMock()
+    connection.get.side_effect = parameters
+    mocker.patch(
+        "fastcs_xspress.xspress_odin_controller.XspressOdinController.initialise"
     )
 
-    assert isinstance(ctrl, XspressAdapterController)
-
-    await ctrl.initialise()
+    await xsp_controller.initialise()
     assert isinstance(
-        ctrl.sub_controllers["dtc_controller"],
+        xsp_controller.xspress.sub_controllers["dtc_controller"],  # pyright: ignore[reportAttributeAccessIssue]
         OdinSubController,
     )
     assert isinstance(
-        ctrl.sub_controllers["scalar_controller"],
+        xsp_controller.xspress.sub_controllers["scalar_controller"],  # pyright: ignore[reportAttributeAccessIssue]
         OdinSubController,
     )
 
 
 @pytest.mark.asyncio
 async def test_xspress_controller_creates_fp_adapter(mocker: MockerFixture):
-    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
     xsp_controller.connection = mocker.AsyncMock()
 
     parameters = [
@@ -108,21 +107,31 @@ async def test_xspress_attribute_creation(mocker: MockerFixture):
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
     connection.get.side_effect = [
+        response,
         {"allowed": response["command"]["allowed"]},
     ]
-    ctrl = xsp_controller._create_adapter_controller(
-        xsp_controller.connection,
-        create_odin_parameters(response),
-        "xspress",
-        "XspressAdapter",
+    mocker.patch("fastcs_xspress.xspress_controller.XspressOdinController.initialise")
+
+    await xsp_controller.initialise()
+
+    assert (
+        len(
+            xsp_controller.sub_controllers["xspress"]
+            .sub_controllers["dtc_controller"]
+            .attributes
+        )
+        == 81
     )
-
-    await ctrl.initialise()
-
-    assert len(ctrl.sub_controllers["dtc_controller"].attributes) == 81
-    assert len(ctrl.sub_controllers["scalar_controller"].attributes) == 120
-    assert len(ctrl.attributes) == 53
-    assert len(ctrl.command_methods) == 4
+    assert (
+        len(
+            xsp_controller.sub_controllers["xspress"]
+            .sub_controllers["scalar_controller"]
+            .attributes
+        )
+        == 120
+    )
+    assert len(xsp_controller.sub_controllers["xspress"].attributes) == 53
+    assert len(xsp_controller.sub_controllers["xspress"].command_methods) == 4
 
 
 @pytest.mark.asyncio
