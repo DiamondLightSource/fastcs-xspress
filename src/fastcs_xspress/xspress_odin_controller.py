@@ -33,10 +33,10 @@ class XspressOdinController(OdinController):
         adapters_response = await self.connection.get(f"{self.API_PREFIX}/adapters")
         match adapters_response:
             case {"adapters": [*adapter_list]}:
-                adapters = tuple(
-                    a for a in adapter_list if isinstance(a, str) and a != "xspress"
-                )
-                if len(adapters) != len(adapter_list) - 1:
+                # Expecting to always have at least xspress as one of the adapters
+                adapter_list.pop(adapter_list.index("xspress"))
+                adapters = tuple(a for a in adapter_list if isinstance(a, str))
+                if len(adapters) != len(adapter_list):
                     raise ValueError(f"Received invalid adapters list:\n{adapter_list}")
             case _:
                 raise ValueError(
@@ -90,8 +90,6 @@ class XspressOdinController(OdinController):
         adapter: str,
         module: str,
     ) -> BaseController:
-        print(f"adapter: {adapter} | module: {module}")
-
         match module:
             case "FrameProcessorAdapter":
                 return XspressFPAdapterController(

@@ -98,7 +98,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
         self.total_frames_written = AttrR(
             Int(),
             io_ref=StatusSummaryAttributeIORef(
-                ["FramesWritten"],
+                [""],
                 "FramesWritten",
                 lambda val: int(self.frames_written.get() / self.count.get())
                 if self.count.get() > 0
