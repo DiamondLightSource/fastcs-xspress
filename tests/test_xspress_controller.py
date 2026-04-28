@@ -5,10 +5,11 @@ from pathlib import Path
 import pytest
 from fastcs.attributes import AttrRW
 from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs.datatypes import Int
+from fastcs.datatypes import Int, String
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
+from fastcs_odin.controllers.odin_data.meta_writer import MetaWriterAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
 from fastcs_odin.util import (
     OdinParameter,
@@ -23,6 +24,25 @@ from fastcs_xspress.xspress_odin_controller import XspressOdinController
 
 _lock = asyncio.Lock()
 HERE = Path(__file__).parent
+
+
+@pytest.fixture
+def xsp_odin_fp_controller(mocker: MockerFixture):
+    controller = XspressFPAdapterController(mocker.AsyncMock(), [], "", [])
+
+    controller.file_path = AttrRW(String(), initial_value="/tmp/data")  # pyright: ignore[reportAttributeAccessIssue]
+    controller.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
+    controller.acquisition_id = AttrRW(String(), initial_value="test_id")  # pyright: ignore[reportAttributeAccessIssue]
+    controller.acq_id = AttrRW(String(), initial_value="test_id")
+
+    return controller
+
+
+@pytest.fixture
+def xsp_odin_mw_controller(mocker: MockerFixture):
+    MetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
+
+    return MetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
 
 
 @pytest.mark.asyncio
@@ -80,21 +100,56 @@ async def test_xspress_adapter_controller_creates_sub_controllers(
 
 
 @pytest.mark.asyncio
-async def test_xspress_controller_creates_fp_adapter(mocker: MockerFixture):
+async def test_xspress_controller_creates_fp_adapter(
+    xsp_odin_fp_controller, xsp_odin_mw_controller, mocker: MockerFixture
+):
+    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
+    connection = mocker.patch.object(xsp_controller, "connection")
+    connection.get = mocker.AsyncMock()
+    connection.get.side_effect = [
+        {
+            "adapters": ["xspress"],
+        },
+    ]
+
+    mocker.patch(
+        "fastcs_xspress.xspress_odin_controller.XspressOdinController._create_adapter_controller"
+    )
+
+    mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.XspressFPAdapterController.initialise"
+    )
+
+    mocker.patch(
+        "fastcs_odin.controllers.odin_data.meta_writer.MetaWriterAdapterController.initialise"
+    )
+
+    mocker.patch.object(xsp_controller, "FP", xsp_odin_fp_controller, create=True)
+    mocker.patch.object(xsp_controller, "MW", xsp_odin_mw_controller, create=True)
+
+    await xsp_controller.initialise()
+    assert isinstance(xsp_controller.FP, XspressFPAdapterController)
+    assert isinstance(xsp_controller.MW, MetaWriterAdapterController)
+
+
+@pytest.mark.asyncio
+async def test_xspress_odin_adoater_creation(mocker: MockerFixture):
     xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
     xsp_controller.connection = mocker.AsyncMock()
-
     parameters = [
         OdinParameter(
             ["0"], metadata=OdinParameterMetadata(value=0, type="int", writeable=False)
         )
     ]
-
     ctrl = xsp_controller._create_adapter_controller(
         xsp_controller.connection, parameters, "fp", "FrameProcessorAdapter"
     )
-
     assert isinstance(ctrl, XspressFPAdapterController)
+
+    ctrl = xsp_controller._create_adapter_controller(
+        xsp_controller.connection, parameters, "mw", "MetaListenerAdapter"
+    )
+    assert isinstance(ctrl, MetaWriterAdapterController)
 
 
 @pytest.mark.asyncio
