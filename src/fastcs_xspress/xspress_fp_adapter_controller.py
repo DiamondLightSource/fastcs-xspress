@@ -107,6 +107,23 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
             ),
         )
 
+        self.raw_file_path = AttrRW(
+            String(),
+            io_ref=ConfigFanAttributeIORef(
+                [
+                    attr
+                    for attr in self.attributes["file_path"].io_ref.attributes  # pyright: ignore[reportAttributeAccessIssue]
+                    if "RAW" in attr.full_name
+                ]  # pyright: ignore[reportArgumentType]
+            ),
+        )
+
+        self.attributes["file_path"].io_ref.attributes = [  # pyright: ignore[reportAttributeAccessIssue]
+            attr
+            for attr in self.attributes["file_path"].io_ref.attributes  # pyright: ignore[reportAttributeAccessIssue]
+            if "RAW" not in attr.full_name
+        ]
+
         async def set_chunk_fp(value: int):
             for sub_controller, mca_num in mca_list:
                 await self.connection.put(
