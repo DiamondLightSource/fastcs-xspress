@@ -11,6 +11,7 @@ from fastcs_odin.controllers.odin_data.frame_processor import (
 )
 from fastcs_odin.controllers.odin_data.meta_writer import MetaWriterAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
+from fastcs_odin.io.config_fan_sender_attribute_io import ConfigFanAttributeIORef
 from fastcs_odin.util import (
     OdinParameter,
     OdinParameterMetadata,
@@ -226,6 +227,20 @@ async def test_xspress_chunk_set(mocker: MockerFixture):
     connection = mocker.patch.object(xsp_fp, "connection")
     connection.get = mocker.AsyncMock()
     xsp_fp.chunks = AttrRW(Int(), initial_value=0)
+    mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.XspressFPAdapterController.attributes",
+        {
+            "file_path": AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        AttrRW(String(), None, initial_value=""),
+                    ]
+                ),
+                initial_value="",
+            )
+        },
+    )
 
     await xsp_fp.initialise()
 
@@ -265,6 +280,20 @@ async def test_xspress_fp_adapter_controller_logging(mocker: MockerFixture):
     connection = mocker.patch.object(xsp_fp, "connection")
     connection.get = mocker.AsyncMock()
     xsp_fp.chunks = AttrRW(Int(), initial_value=0)
+    mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.XspressFPAdapterController.attributes",
+        {
+            "file_path": AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        AttrRW(String(), None, initial_value=""),
+                    ]
+                ),
+                initial_value="",
+            )
+        },
+    )
 
     await xsp_fp.initialise()
 
