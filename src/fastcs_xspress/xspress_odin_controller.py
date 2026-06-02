@@ -36,12 +36,8 @@ class XspressOdinController(OdinController):
                 # Expecting to always have at least xspress as one of the adapters
                 adapter_list.pop(adapter_list.index("xspress"))
                 adapters = tuple(a for a in adapter_list if isinstance(a, str))
-                if len(adapters) != len(adapter_list):
-                    raise ValueError(f"Received invalid adapters list:\n{adapter_list}")
             case _:
-                raise ValueError(
-                    f"Did not find valid adapters in response:\n{adapters_response}"
-                )
+                raise ValueError("Did not find valid adapters in response")
 
         for adapter in adapters:
             # Get full parameter tree and split into parameters at the root and under

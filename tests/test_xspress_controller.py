@@ -134,6 +134,21 @@ async def test_xspress_controller_creates_fp_adapter(
 
 
 @pytest.mark.asyncio
+async def test_initialise_raises(mocker: MockerFixture):
+    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller.connection = mocker.AsyncMock()
+    xsp_controller.connection.open = mocker.Mock()
+    xsp_controller.connection.get.return_value = {"not_adapters": []}
+
+    with pytest.raises(ValueError, match=r"Did not find valid adapters in response"):
+        await xsp_controller.initialise()
+
+    xsp_controller.connection.get.return_value = {"adapters": []}
+    with pytest.raises(ValueError, match=r"'xspress' is not in list"):
+        await xsp_controller.initialise()
+
+
+@pytest.mark.asyncio
 async def test_xspress_odin_adoater_creation(mocker: MockerFixture):
     xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
     xsp_controller.connection = mocker.AsyncMock()
