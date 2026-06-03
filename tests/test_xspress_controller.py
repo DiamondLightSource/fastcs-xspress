@@ -49,8 +49,6 @@ def xsp_odin_mw_controller(mocker: MockerFixture):
 @pytest.mark.asyncio
 async def test_create_xspress_controller(mocker: MockerFixture):
     xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
-    # xsp_controller.connection = mocker.AsyncMock()
-    # xsp_controller.connection.get.side_effect = [{"val": ""}]
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
@@ -108,15 +106,14 @@ async def test_xspress_controller_creates_fp_adapter(
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
     connection.get.side_effect = [
-        {
-            "adapters": ["xspress"],
-        },
+        {"adapters": ["xspress", "fp", "mw"]},
+        {"module": {"value": "FrameProcessorAdapter"}},
+        {"module": {"value": "MetaListenerAdapter"}},
     ]
-
-    mocker.patch(
+    func = mocker.patch(
         "fastcs_xspress.xspress_odin_controller.XspressOdinController._create_adapter_controller"
     )
-
+    func.side_effect = [xsp_odin_fp_controller, xsp_odin_mw_controller]
     mocker.patch(
         "fastcs_xspress.xspress_fp_adapter_controller.XspressFPAdapterController.initialise"
     )
@@ -124,9 +121,9 @@ async def test_xspress_controller_creates_fp_adapter(
     mocker.patch(
         "fastcs_odin.controllers.odin_data.meta_writer.MetaWriterAdapterController.initialise"
     )
-
-    mocker.patch.object(xsp_controller, "FP", xsp_odin_fp_controller, create=True)
-    mocker.patch.object(xsp_controller, "MW", xsp_odin_mw_controller, create=True)
+    mocker.patch(
+        "fastcs_odin.io.status_summary_attribute_io.initialise_summary_attributes"
+    )
 
     await xsp_controller.initialise()
     assert isinstance(xsp_controller.FP, XspressFPAdapterController)
