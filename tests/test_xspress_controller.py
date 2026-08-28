@@ -250,7 +250,16 @@ async def test_xspress_chunk_set(mocker: MockerFixture):
                     ]
                 ),
                 initial_value="",
-            )
+            ),
+            "mca_dataset": AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        AttrRW(String(), None, initial_value=""),
+                    ]
+                ),
+                initial_value="",
+            ),
         },
     )
 

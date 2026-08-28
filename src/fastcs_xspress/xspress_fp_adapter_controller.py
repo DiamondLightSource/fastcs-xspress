@@ -45,7 +45,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
         # When running in List Mode we don't have the concept of
         # Dimensions, but those are needed in MCA mode so we need to
         # check before creating them.
-        if any("dims" in key for key in self.attributes):
+        if any("mca" in key for key in self.attributes):
             self.data_dims_0 = AttrRW(
                 Int(),
                 io_ref=ConfigFanAttributeIORef(
