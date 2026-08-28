@@ -42,59 +42,89 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                         f"Subcontroller {sub_controller} not an OdinAdapterController"
                     )
 
-        self.data_dims_0 = AttrRW(
-            Int(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "dims_0" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_dims_1 = AttrRW(
-            Int(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "dims_1" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_chunks_0 = AttrRW(
-            Int(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "chunks_0" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_chunks_1 = AttrRW(
-            Int(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "chunks_1" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_chunks_2 = AttrRW(
-            Int(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "chunks_2" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_datatype = AttrRW(
-            String(),
-            io_ref=ConfigFanAttributeIORef(
-                [attr for name, attr in self.attributes.items() if "datatype" in name]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
-        self.data_compression = AttrRW(
-            String(),
-            io_ref=ConfigFanAttributeIORef(
-                [
-                    attr
-                    for name, attr in self.attributes.items()
-                    if "compression" in name
-                ]  # pyright: ignore[reportArgumentType]
-            ),
-            group="Data",
-        )
+        # When running in List Mode we don't have the concept of
+        # Dimensions, but those are needed in MCA mode so we need to
+        # check before creating them.
+        if any("dims" in key for key in self.attributes):
+            self.data_dims_0 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [attr for name, attr in self.attributes.items() if "dims_0" in name]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_dims_1 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [attr for name, attr in self.attributes.items() if "dims_1" in name]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_chunks_0 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "chunks_0" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_chunks_1 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "chunks_1" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_chunks_2 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "chunks_2" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_datatype = AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "datatype" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+            self.data_compression = AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "compression" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
+
+            async def set_chunk_fp(value: int):
+                for sub_controller, mca_num in mca_list:
+                    await self.connection.put(
+                        f"api/0.1/fp/{sub_controller}/config/hdf/dataset/mca_{mca_num}/chunks",
+                        [value, 1, 4096],  # pyright: ignore[reportArgumentType]
+                    )
+
+            self.chunks.add_on_update_callback(callback=set_chunk_fp)
+
         self.total_frames_written = AttrR(
             Int(),
             io_ref=StatusSummaryAttributeIORef(
@@ -123,12 +153,3 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
             for attr in self.attributes["file_path"].io_ref.attributes  # pyright: ignore[reportAttributeAccessIssue]
             if "RAW" not in attr.full_name
         ]
-
-        async def set_chunk_fp(value: int):
-            for sub_controller, mca_num in mca_list:
-                await self.connection.put(
-                    f"api/0.1/fp/{sub_controller}/config/hdf/dataset/mca_{mca_num}/chunks",
-                    [value, 1, 4096],  # pyright: ignore[reportArgumentType]
-                )
-
-        self.chunks.add_on_update_callback(callback=set_chunk_fp)
