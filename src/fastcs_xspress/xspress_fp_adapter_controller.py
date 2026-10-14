@@ -1,7 +1,8 @@
 import logging
 
+import numpy as np
 from fastcs.attributes import AttrR, AttrRW
-from fastcs.datatypes import Int, String
+from fastcs.datatypes import Int, String, Waveform
 from fastcs_odin.controllers import (
     FrameProcessorAdapterController,
 )
@@ -10,6 +11,8 @@ from fastcs_odin.io import StatusSummaryAttributeIORef
 from fastcs_odin.io.config_fan_sender_attribute_io import ConfigFanAttributeIORef
 from fastcs_odin.util import get_all_sub_controllers
 
+LIST_MODE_DATASETS = ["time_frame", "time_stamp", "event_height", "reset_flag"]
+
 
 class XspressFPAdapterController(FrameProcessorAdapterController):
     chunks: AttrRW[int]
@@ -17,6 +20,12 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
     count: AttrR[int]
 
     async def initialise(self):
+        # Get all the dataset names available
+        datasets = [
+            name.uri[name.uri.index("dataset") + 1]
+            for name in self.parameters
+            if "dataset" in name.uri and "datatype" in name.uri
+        ]
         await super().initialise()
 
         # Construct a list with all the MCA dataset chunks
@@ -41,6 +50,13 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                     logging.warning(
                         f"Subcontroller {sub_controller} not an OdinAdapterController"
                     )
+
+        # PV for reading all the datasets created on startup
+        self.dataset_table = AttrR(
+            Waveform(array_dtype=str, shape=(len(datasets),)),
+            None,
+            initial_value=np.array(datasets),
+        )
 
         # When running in List Mode we don't have the concept of
         # Dimensions, but those are needed in MCA mode so we need to
@@ -124,6 +140,19 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                     )
 
             self.chunks.add_on_update_callback(callback=set_chunk_fp)
+
+        if any(key in LIST_MODE_DATASETS for key in self.attributes):
+            self.data_chunks_0 = AttrRW(
+                Int(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        attr
+                        for name, attr in self.attributes.items()
+                        if "chunks_0" in name
+                    ]  # pyright: ignore[reportArgumentType]
+                ),
+                group="Data",
+            )
 
         self.total_frames_written = AttrR(
             Int(),
