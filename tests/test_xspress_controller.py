@@ -321,3 +321,63 @@ async def test_xspress_fp_adapter_controller_logging(mocker: MockerFixture):
     logging.assert_called_with(
         "Subcontroller NotAnOdinSubController not an OdinAdapterController"
     )
+
+
+@pytest.mark.asyncio
+async def test_xspress_fp_create_dataset_table(mocker: MockerFixture):
+    xsp_fp = XspressFPAdapterController(mocker.AsyncMock(), [], "api/0.1", [])
+    mocker.patch.object(
+        FrameProcessorAdapterController,
+        "initialise",
+        new_callable=mocker.AsyncMock,
+    )
+
+    parameters = [
+        OdinParameter(
+            ["dataset", "mca_0", "datatype"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+        OdinParameter(
+            ["dataset", "mca_1", "datatype"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+        OdinParameter(
+            ["dataset", "mca_2", "datatype"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+        OdinParameter(
+            ["dataset", "mca_3", "datatype"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+    ]
+    xsp_fp.parameters = parameters
+
+    connection = mocker.patch.object(xsp_fp, "connection")
+    connection.get = mocker.AsyncMock()
+    xsp_fp.chunks = AttrRW(Int(), initial_value=0)
+    mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.XspressFPAdapterController.attributes",
+        {
+            "file_path": AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        AttrRW(String(), None, initial_value=""),
+                    ]
+                ),
+                initial_value="",
+            ),
+            "mca_dataset": AttrRW(
+                String(),
+                io_ref=ConfigFanAttributeIORef(
+                    [
+                        AttrRW(String(), None, initial_value=""),
+                    ]
+                ),
+                initial_value="",
+            ),
+        },
+    )
+    await xsp_fp.initialise()
+    assert len(xsp_fp.dataset_table.get()) == 4
+    assert (xsp_fp.dataset_table.get() == ["mca_0", "mca_1", "mca_2", "mca_3"]).all()
