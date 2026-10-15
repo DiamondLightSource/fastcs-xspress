@@ -144,7 +144,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
         if any(
             dataset in key for key in self.attributes for dataset in LIST_MODE_DATASETS
         ):
-            self.data_chunks_0 = AttrRW(
+            self.list_data_chunks_0 = AttrRW(
                 Int(),
                 io_ref=ConfigFanAttributeIORef(
                     [
@@ -153,7 +153,7 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                         if "chunks_0" in name
                     ]  # pyright: ignore[reportArgumentType]
                 ),
-                group="Data",
+                group="ListData",
             )
 
         self.total_frames_written = AttrR(

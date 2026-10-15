@@ -11,11 +11,11 @@ from fastcs_odin.controllers.odin_data.frame_processor import (
 )
 from fastcs_odin.controllers.odin_data.meta_writer import MetaWriterAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
-from fastcs_odin.io.config_fan_sender_attribute_io import ConfigFanAttributeIORef
-from fastcs_odin.util import (
-    OdinParameter,
-    OdinParameterMetadata,
+from fastcs_odin.io.config_fan_sender_attribute_io import (
+    ConfigFanAttributeIO,
+    ConfigFanAttributeIORef,
 )
+from fastcs_odin.util import OdinParameter, OdinParameterMetadata
 from pytest_mock import MockerFixture
 
 from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
@@ -35,6 +35,7 @@ def xsp_odin_fp_controller(mocker: MockerFixture):
     controller.file_prefix = AttrRW(String(), initial_value="test_prefix")  # pyright: ignore[reportAttributeAccessIssue]
     controller.acquisition_id = AttrRW(String(), initial_value="test_id")  # pyright: ignore[reportAttributeAccessIssue]
     controller.acq_id = AttrRW(String(), initial_value="test_id")
+    controller.chunks = AttrRW(Int(), initial_value=0)
 
     return controller
 
@@ -280,6 +281,85 @@ async def test_xspress_chunk_set(mocker: MockerFixture):
         "api/0.1/fp/0/config/hdf/dataset/mca_3/chunks", [1, 1, 4096]
     )
     assert connection.put.await_count == len(parameters)
+
+
+@pytest.mark.asyncio
+async def test_xspress_list_dataset(mocker: MockerFixture):
+    xsp_fp = XspressFPAdapterController(mocker.AsyncMock(), [], "api/0.1", [])
+    mocker.patch.object(
+        FrameProcessorAdapterController,
+        "initialise",
+        new_callable=mocker.AsyncMock,
+    )
+    get_sub_controllers = mocker.patch(
+        "fastcs_xspress.xspress_fp_adapter_controller.get_all_sub_controllers"
+    )
+
+    parameters = [
+        OdinParameter(
+            ["ch0_time_frame", "chunks", "0"],
+            metadata=OdinParameterMetadata(value=0, type="int", writeable=True),
+        ),
+        OdinParameter(
+            ["ch1_time_frame", "chunks", "0"],
+            metadata=OdinParameterMetadata(value=0, type="int", writeable=True),
+        ),
+        OdinParameter(
+            ["ch0_event_height", "chunks", "0"],
+            metadata=OdinParameterMetadata(value=0, type="int", writeable=True),
+        ),
+        OdinParameter(
+            ["ch1_event_height", "chunks", "0"],
+            metadata=OdinParameterMetadata(value=0, type="int", writeable=True),
+        ),
+    ]
+
+    xsp_fp.parameters = parameters
+
+    get_sub_controllers.return_value = []
+
+    connection = mocker.patch.object(xsp_fp, "connection")
+    connection.get = mocker.AsyncMock()
+
+    xsp_fp.attributes["file_path"] = AttrRW(
+        String(),
+        io_ref=ConfigFanAttributeIORef(
+            [
+                AttrRW(String(), None, initial_value=""),
+            ]
+        ),
+        initial_value="",
+    )
+
+    mock_attrs = {}
+
+    for parameter in xsp_fp.parameters:
+        m = mocker.MagicMock()
+        m.put = mocker.AsyncMock()
+        mock_attrs[parameter.name] = m
+        xsp_fp.add_attribute(
+            parameter.name,
+            m,
+        )
+
+    await xsp_fp.initialise()
+
+    io = ConfigFanAttributeIO()
+
+    await io.send(xsp_fp.list_data_chunks_0, 1)
+
+    mock_attrs["ch0_event_height_chunks_0"].put.assert_called_once_with(
+        1, sync_setpoint=True
+    )
+    mock_attrs["ch1_event_height_chunks_0"].put.assert_called_once_with(
+        1, sync_setpoint=True
+    )
+    mock_attrs["ch0_time_frame_chunks_0"].put.assert_called_once_with(
+        1, sync_setpoint=True
+    )
+    mock_attrs["ch1_time_frame_chunks_0"].put.assert_called_once_with(
+        1, sync_setpoint=True
+    )
 
 
 @pytest.mark.asyncio
