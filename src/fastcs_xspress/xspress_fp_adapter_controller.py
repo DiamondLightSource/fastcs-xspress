@@ -141,7 +141,9 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
 
             self.chunks.add_on_update_callback(callback=set_chunk_fp)
 
-        if any(key in LIST_MODE_DATASETS for key in self.attributes):
+        if any(
+            dataset in key for key in self.attributes for dataset in LIST_MODE_DATASETS
+        ):
             self.data_chunks_0 = AttrRW(
                 Int(),
                 io_ref=ConfigFanAttributeIORef(
