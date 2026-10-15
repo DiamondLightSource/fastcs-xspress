@@ -159,9 +159,11 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
             io_ref=StatusSummaryAttributeIORef(
                 [""],
                 "FramesWritten",
-                lambda val: int(self.frames_written.get() / self.count.get())
-                if self.count.get() > 0
-                else 0,
+                lambda val: (
+                    int(self.frames_written.get() / self.count.get())
+                    if self.count.get() > 0
+                    else 0
+                ),
                 [self.frames_written],
             ),
         )

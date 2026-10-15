@@ -62,7 +62,7 @@ class XspressAdapterController(OdinAdapterController):
 
         scalar_parameters, self.parameters = partition(
             self.parameters,
-            lambda p: (p.path[0].startswith("sca") or p.path[0].startswith("inp")),
+            lambda p: p.path[0].startswith("sca") or p.path[0].startswith("inp"),
         )
 
         dtc_parameters, self.parameters = partition(
