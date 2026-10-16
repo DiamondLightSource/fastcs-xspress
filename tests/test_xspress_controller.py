@@ -21,6 +21,9 @@ from pytest_mock import MockerFixture
 from fastcs_xspress.xspress_adapter_controller import XspressAdapterController
 from fastcs_xspress.xspress_controller import XspressController
 from fastcs_xspress.xspress_fp_adapter_controller import XspressFPAdapterController
+from fastcs_xspress.xspress_meta_writer_adapter import (
+    XspressMetaWriterAdapterController,
+)
 from fastcs_xspress.xspress_odin_controller import XspressOdinController
 
 _lock = asyncio.Lock()
@@ -42,9 +45,9 @@ def xsp_odin_fp_controller(mocker: MockerFixture):
 
 @pytest.fixture
 def xsp_odin_mw_controller(mocker: MockerFixture):
-    MetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
+    XspressMetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
 
-    return MetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
+    return XspressMetaWriterAdapterController(mocker.AsyncMock(), [], "", [])
 
 
 @pytest.mark.asyncio
@@ -128,7 +131,7 @@ async def test_xspress_controller_creates_fp_adapter(
 
     await xsp_controller.initialise()
     assert isinstance(xsp_controller.FP, XspressFPAdapterController)
-    assert isinstance(xsp_controller.MW, MetaWriterAdapterController)
+    assert isinstance(xsp_controller.MW, XspressMetaWriterAdapterController)
 
 
 @pytest.mark.asyncio

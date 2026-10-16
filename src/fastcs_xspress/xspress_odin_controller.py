@@ -2,7 +2,6 @@ from fastcs.attributes import AttrR, AttrRW
 from fastcs.controllers import BaseController
 from fastcs.datatypes import Bool, String
 from fastcs_odin.controllers import OdinController
-from fastcs_odin.controllers.odin_data.meta_writer import MetaWriterAdapterController
 from fastcs_odin.http_connection import HTTPConnection
 from fastcs_odin.io import StatusSummaryAttributeIORef
 from fastcs_odin.io.config_fan_sender_attribute_io import ConfigFanAttributeIORef
@@ -16,13 +15,16 @@ from fastcs_odin.util import (
 )
 
 from fastcs_xspress.xspress_fp_adapter_controller import XspressFPAdapterController
+from fastcs_xspress.xspress_meta_writer_adapter import (
+    XspressMetaWriterAdapterController,
+)
 
 
 class XspressOdinController(OdinController):
     """A root ``Controller`` for an xspress control server."""
 
     FP: XspressFPAdapterController
-    MW: MetaWriterAdapterController
+    MW: XspressMetaWriterAdapterController
     writing = AttrR(
         Bool(), io_ref=StatusSummaryAttributeIORef([("MW", "FP")], "writing", any)
     )
@@ -89,6 +91,10 @@ class XspressOdinController(OdinController):
         match module:
             case "FrameProcessorAdapter":
                 return XspressFPAdapterController(
+                    connection, parameters, f"{self.API_PREFIX}/{adapter}", self._ios
+                )
+            case "MetaListenerAdapter":
+                return XspressMetaWriterAdapterController(
                     connection, parameters, f"{self.API_PREFIX}/{adapter}", self._ios
                 )
             case _:
