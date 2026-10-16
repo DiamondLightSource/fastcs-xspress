@@ -463,3 +463,23 @@ async def test_xspress_fp_create_dataset_table(mocker: MockerFixture):
     await xsp_fp.initialise()
     assert len(xsp_fp.dataset_table.get()) == 4
     assert (xsp_fp.dataset_table.get() == ["mca_0", "mca_1", "mca_2", "mca_3"]).all()
+
+
+@pytest.mark.asyncio
+async def test_xspress_mw_initialise(mocker: MockerFixture):
+    xsp_mw = XspressMetaWriterAdapterController(mocker.AsyncMock(), [], "api/0.1", [])
+
+    parameters = [
+        OdinParameter(
+            ["0", "status", "timestamp"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+        OdinParameter(
+            ["config", "acquisitions", "data_endpoints"],
+            metadata=OdinParameterMetadata(value=0, type="str", writeable=False),
+        ),
+    ]
+    xsp_mw.parameters = parameters
+
+    await xsp_mw.initialise()
+    assert len(xsp_mw.attributes) == 6
