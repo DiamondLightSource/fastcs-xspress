@@ -9,7 +9,6 @@ from fastcs.datatypes import Int, String
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
-from fastcs_odin.controllers.odin_data.meta_writer import MetaWriterAdapterController
 from fastcs_odin.controllers.odin_subcontroller import OdinSubController
 from fastcs_odin.io.config_fan_sender_attribute_io import (
     ConfigFanAttributeIO,
@@ -166,7 +165,7 @@ async def test_xspress_odin_adoater_creation(mocker: MockerFixture):
     ctrl = xsp_controller._create_adapter_controller(
         xsp_controller.connection, parameters, "mw", "MetaListenerAdapter"
     )
-    assert isinstance(ctrl, MetaWriterAdapterController)
+    assert isinstance(ctrl, XspressMetaWriterAdapterController)
 
 
 @pytest.mark.asyncio
