@@ -1,8 +1,7 @@
 import logging
 
-import numpy as np
 from fastcs.attributes import AttrR, AttrRW
-from fastcs.datatypes import Int, String, Waveform
+from fastcs.datatypes import Int, String
 from fastcs_odin.controllers import (
     FrameProcessorAdapterController,
 )
@@ -21,11 +20,11 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
 
     async def initialise(self):
         # Get all the dataset names available
-        datasets = [
-            name.uri[name.uri.index("dataset") + 1]
-            for name in self.parameters
-            if "dataset" in name.uri and "datatype" in name.uri
-        ]
+        # datasets = [
+        #     name.uri[name.uri.index("dataset") + 1]
+        #     for name in self.parameters
+        #     if "dataset" in name.uri and "datatype" in name.uri
+        # ]
         await super().initialise()
 
         # Construct a list with all the MCA dataset chunks
@@ -52,11 +51,11 @@ class XspressFPAdapterController(FrameProcessorAdapterController):
                     )
 
         # PV for reading all the datasets created on startup
-        self.dataset_table = AttrR(
-            Waveform(array_dtype=str, shape=(len(datasets),)),
-            None,
-            initial_value=np.array(datasets),
-        )
+        # self.dataset_table = AttrR(
+        #     Waveform(array_dtype="str", shape=(len(datasets),)),
+        #     None,
+        #     initial_value=np.array(datasets),
+        # )
 
         # When running in List Mode we don't have the concept of
         # Dimensions, but those are needed in MCA mode so we need to

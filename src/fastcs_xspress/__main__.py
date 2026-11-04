@@ -1,67 +1,7 @@
-from pathlib import Path
-from typing import Optional
-
-import typer
-from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs.launch import FastCS
-from fastcs.logging import LogLevel, configure_logging
-from fastcs.transports.epics.ca import EpicsCATransport
-from fastcs.transports.epics.options import EpicsGUIOptions, EpicsIOCOptions
+from fastcs.launch import launch
 
 from fastcs_xspress.xspress_controller import XspressController
 
 from . import __version__
 
-__all__ = ["main"]
-
-
-app = typer.Typer()
-
-
-def version_callback(value: bool):
-    if value:
-        typer.echo(__version__)
-        raise typer.Exit()
-
-
-@app.callback()
-def main(
-    # TODO: typer does not support `bool | None` yet
-    # https://github.com/tiangolo/typer/issues/533
-    version: Optional[bool] = typer.Option(  # noqa
-        None,
-        "--version",
-        callback=version_callback,
-        is_eager=True,
-        help="Print the version and exit",
-    ),
-):
-    pass
-
-
-OdinIp = typer.Option("127.0.0.1", help="IP address of odin server")
-OdinPort = typer.Option(8888, help="Port of odin server")
-
-
-@app.command()
-def ioc(pv_prefix: str = typer.Argument(), ip: str = OdinIp, port: int = OdinPort):
-    configure_logging(LogLevel.TRACE)
-
-    fastcs = FastCS(
-        controller=XspressController(IPConnectionSettings(ip, port)),
-        transports=[
-            EpicsCATransport(
-                epicsca=EpicsIOCOptions(pv_prefix=pv_prefix),
-                gui=EpicsGUIOptions(
-                    output_path=Path.cwd() / "opi" / "xspress.bob",
-                    title=f"Odin - {pv_prefix}",
-                ),
-            )
-        ],
-    )
-
-    fastcs.run()
-
-
-if __name__ == "__main__":
-    app()
+launch(controller_classes=[XspressController], version=__version__)

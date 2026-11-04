@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=schema.json
+controllers:
+  - id: XSP
+    type: fastcs_xspress.XspressController
+    connection_settings:
+      ip: 127.0.0.1
+      port: 8888
+transport:
+  - epicspva: {}
+    gui:
+      title: "Test"
+      output_dir: ./opi/
+  - epicsca: {}

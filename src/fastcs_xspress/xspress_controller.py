@@ -1,7 +1,6 @@
 import asyncio
 
-from fastcs.connections.ip_connection import IPConnectionSettings
-from fastcs_odin.controllers import OdinController
+from fastcs_odin.controllers import OdinController, OdinControllerSettings
 from fastcs_odin.util import (
     create_odin_parameters,
 )
@@ -13,7 +12,7 @@ from fastcs_xspress.xspress_odin_controller import XspressOdinController
 class XspressController(OdinController):
     """A root ``Controller`` for an xspress control server."""
 
-    def __init__(self, settings: IPConnectionSettings):
+    def __init__(self, settings: OdinControllerSettings):
         super().__init__(settings)
         self.OD = XspressOdinController(settings)
 
