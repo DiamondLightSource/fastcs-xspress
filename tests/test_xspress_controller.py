@@ -6,6 +6,7 @@ import pytest
 from fastcs.attributes import AttrRW
 from fastcs.connections.ip_connection import IPConnectionSettings
 from fastcs.datatypes import Int, String
+from fastcs_odin.controllers import OdinControllerSettings
 from fastcs_odin.controllers.odin_data.frame_processor import (
     FrameProcessorAdapterController,
 )
@@ -51,7 +52,8 @@ def xsp_odin_mw_controller(mocker: MockerFixture):
 
 @pytest.mark.asyncio
 async def test_create_xspress_controller(mocker: MockerFixture):
-    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressController(settings)
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
@@ -79,8 +81,8 @@ async def test_create_xspress_controller(mocker: MockerFixture):
 async def test_xspress_adapter_controller_creates_sub_controllers(
     mocker: MockerFixture,
 ):
-    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
-
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressController(settings)
     parameters = [{"dtc": "", "scalars": ""}]
 
     connection = mocker.patch.object(xsp_controller, "connection")
@@ -105,7 +107,8 @@ async def test_xspress_adapter_controller_creates_sub_controllers(
 async def test_xspress_controller_creates_fp_adapter(
     xsp_odin_fp_controller, xsp_odin_mw_controller, mocker: MockerFixture
 ):
-    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressOdinController(settings)
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
     connection.get.side_effect = [
@@ -135,7 +138,8 @@ async def test_xspress_controller_creates_fp_adapter(
 
 @pytest.mark.asyncio
 async def test_initialise_raises(mocker: MockerFixture):
-    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressOdinController(settings)
     xsp_controller.connection = mocker.AsyncMock()
     xsp_controller.connection.open = mocker.Mock()
     xsp_controller.connection.get.return_value = {"not_adapters": []}
@@ -150,7 +154,8 @@ async def test_initialise_raises(mocker: MockerFixture):
 
 @pytest.mark.asyncio
 async def test_xspress_odin_adoater_creation(mocker: MockerFixture):
-    xsp_controller = XspressOdinController(IPConnectionSettings("127.0.0.1", 80))
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressOdinController(settings)
     xsp_controller.connection = mocker.AsyncMock()
     parameters = [
         OdinParameter(
@@ -173,7 +178,8 @@ async def test_xspress_attribute_creation(mocker: MockerFixture):
     with (HERE / "input/xspress.json").open() as f:
         response = json.loads(f.read())
 
-    xsp_controller = XspressController(IPConnectionSettings("127.0.0.1", 80))
+    settings = OdinControllerSettings(IPConnectionSettings("127.0.0.1", 80))
+    xsp_controller = XspressController(settings)
 
     connection = mocker.patch.object(xsp_controller, "connection")
     connection.get = mocker.AsyncMock()
